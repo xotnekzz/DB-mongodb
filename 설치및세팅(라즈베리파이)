@@ -1,0 +1,74 @@
+# MonogoDB 설치 및 세팅
+
+## 1. MongoDB 설치
+ - `mongodb_strech_3_0_14_core.zip` 파일 압축해제
+
+ - 압축 해제 후 core가 생성되고 추가로 config, data, logs 디렉토리를 생성한다. 
+
+
+## 2. MongoDB 세팅
+
+### 2-1 MongoDB 계정 설정
+
+- 관리자 계정 설정
+
+```javascript
+use admin
+db.createUser( { user: "<username>",
+          pwd: "<password>",
+          roles: [ "userAdminAnyDatabase",
+                   "dbAdminAnyDatabase",
+                   "readWriteAnyDatabase"
+ 
+] } )
+
+```
+
+- 사용자 계정 설정
+
+```javascript
+use <DBName>
+db.createUser({ user: "<username>",
+          pwd: "<password>",
+          roles: ["dbAdmin", "readWrite"]
+})
+```
+
+- 관리자/사용자 계정삭제
+
+```javascript
+use Admin
+db.dropUser("<username>")
+```
+
+### 2-2 MongoDB Config
+- `vim /test/mongodb/config/mongodb.conf`
+```javascript
+storage:
+ dbPath: /test/mongodb/data
+ 
+systemLog:
+ path: "/test/mongodb/logs/mongo.log"
+ logAppend: true
+ destination: file
+ traceAllExceptions: false
+
+processManagement:
+ fork: true
+
+net:
+ bindIp : 192.168.121.1
+ port : 27017
+
+security:
+ authorization: enabled
+```
+
+
+### 2-3 MongoDB Log
+- `vim /ice/system/mongodb/logs/mongo.log` mongo.log 파일을 생성해야 로그가 기록된다.
+
+## 3. MongoDB 실행
+- `./mongod --config ../config/mongodb.conf --journal`(MongoDB Server)
+- `./mongo IP_ADDRESS:PORT` ex) ./mongo 192.168.255.38:29000 (MongoDB Client)
+
